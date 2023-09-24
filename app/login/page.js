@@ -1,42 +1,41 @@
 "use client";
+import axios from "axios";
 import { useRef } from "react";
 
 const Login = () => {
   const refEmail = useRef(null);
   const refPassword = useRef(null);
-  const apiBase = "https://api-todo.kaungmyatsoe.dev/api/v1";
+  //   const apiBase = "https://api-todo.kaungmyatsoe.dev/api/v1";
+  const apiBase = "http://localhost:5001/api/v1";
+  const key = "YXGfJ5mv51sg2CLNl/hETVWBb6Dw2c1vmj7UOD941v0=";
 
   const logInHandler = async (e) => {
     e.preventDefault();
     if (refEmail.current.value && refPassword.current.value) {
-      const res = await fetch(apiBase + "/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          key: "YXGfJ5mv51sg2CLNl/hETVWBb6Dw2c1vmj7UOD941v0=",
-        },
-        body: JSON.stringify({
-          email: refEmail.current.value,
-          password: refPassword.current.value,
-        }),
+      const authObj = {
+        email: refEmail.current.value,
+        password: refPassword.current.value,
+      };
+      const { data } = await axios({
+        url: apiBase + "/auth/login",
+        method: "post",
+        data: authObj,
+        withCredentials: true,
       });
-      const d = await res.json();
-      console.log(d);
+      console.log(data);
     } else {
       alert("plz type data");
     }
   };
 
   const getAllToDos = async () => {
-    const res = await fetch(apiBase + "/todo/", {
+    const {data} = await axios({
+      url: apiBase + "/todo/",
       method: "GET",
-      headers: {
-        key: "YXGfJ5mv51sg2CLNl/hETVWBb6Dw2c1vmj7UOD941v0=",
-      },
+      withCredentials: true,
     });
-    const todos =await res.json();
 
-    console.log(todos);
+    console.log(data);
   };
 
   return (
